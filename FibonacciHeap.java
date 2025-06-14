@@ -109,9 +109,10 @@ public class FibonacciHeap
 		if(x.parent == null){
 			return 0;
 		}
-		x.parent.looserNum ++;
+		x.parent.looserNum++;
 		this.update_pointers(x);
 		while(curr != null && curr.looserNum == c){
+			curr.looserNum = 0;
 			if(curr.parent != null){
 				curr.parent.looserNum++;
 				numOfCuts++;
