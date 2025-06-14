@@ -12,7 +12,7 @@ public class FibonacciHeap
 	}
 	public HeapNode min; //why both?
 	private int c;
-	private ArrayList<HeapNode> rootList;
+	private HeapNode firstRoot;
 	private int size;
 	private int linkCount;
 	private int cutCount;
@@ -26,7 +26,6 @@ public class FibonacciHeap
 	public FibonacciHeap(int c)
 	{
 		this.c = c;
-		this.rootList = new ArrayList<HeapNode>();
 		this.size = 0;
 		this.linkCount = 0;
 		this.cutCount = 0;
@@ -45,7 +44,14 @@ public class FibonacciHeap
 		HeapNode newNode = new HeapNode();
 		newNode.key = key;
 		newNode.info = info; 
-		this.rootList.add(0,newNode);
+		if(this.firstRoot == null)
+			this.firstRoot = newNode;
+		else
+		{
+			this.firstRoot.prev = newNode;
+			newNode.next = this.firstRoot;
+			this.firstRoot = newNode;
+		}
 		this.min = (this.min.key > newNode.key) ? newNode : this.min;
 		// why is there "min" and "minNode"?
 		this.size++;
