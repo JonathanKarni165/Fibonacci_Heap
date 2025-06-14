@@ -8,7 +8,15 @@ import java.util.*;
 public class FibonacciHeap
 {
 	public static void main(String[] args){
-		System.out.println("hi");
+		FibonacciHeap fHeap = new FibonacciHeap(2);
+		fHeap.insert(2, "hi");
+		fHeap.insert(3, "bye");
+		fHeap.insert(0, "lala");
+
+		System.out.println(fHeap.toString());
+		System.out.println(fHeap.min.key);
+		System.out.println(fHeap.size());
+
 	}
 	public HeapNode min; //why both?
 	private int c;
@@ -16,6 +24,7 @@ public class FibonacciHeap
 	private int size;
 	private int linkCount;
 	private int cutCount;
+	private int treeCount;
 	
 	/**
 	 *
@@ -29,6 +38,7 @@ public class FibonacciHeap
 		this.size = 0;
 		this.linkCount = 0;
 		this.cutCount = 0;
+		this.treeCount = 0;
 	}
 
 	/**
@@ -52,9 +62,12 @@ public class FibonacciHeap
 			newNode.next = this.firstRoot;
 			this.firstRoot = newNode;
 		}
+		if(this.min == null)
+			this.min = newNode;
 		this.min = (this.min.key > newNode.key) ? newNode : this.min;
 		// why is there "min" and "minNode"?
 		this.size++;
+		this.treeCount++;
 		return newNode;
 	}
 
@@ -180,7 +193,21 @@ public class FibonacciHeap
 	 */
 	public int numTrees()
 	{
-		return this.rootList.size(); // should be replaced by student code
+		return this.treeCount; // should be replaced by student code
+	}
+
+	public String toString()
+	{
+		String output = "";
+		HeapNode cur = this.firstRoot;
+		for(int i=0; i<this.treeCount; i++)
+		{
+			output += "**** tree number: " + i + " *****\n";
+			output += cur.key;
+			output += "\n**********\n";
+			cur = cur.next;
+		}
+		return output;
 	}
 
 	/**
