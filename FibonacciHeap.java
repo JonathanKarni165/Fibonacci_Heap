@@ -9,14 +9,18 @@ public class FibonacciHeap
 {
 	public static void main(String[] args){
 		FibonacciHeap fHeap = new FibonacciHeap(2);
-		fHeap.insert(2, "hi");
-		fHeap.insert(3, "bye");
-		fHeap.insert(0, "lala");
+		HeapNode a = fHeap.insert(2, "hi");
+		HeapNode b = fHeap.insert(3, "bye");
+		HeapNode c = fHeap.insert(0, "lala");
+		HeapNode d = fHeap.insert(-1, "lalaki");
 
 		System.out.println(fHeap.toString());
 		System.out.println(fHeap.min.key);
 		System.out.println(fHeap.size());
-
+		fHeap.decreaseKey(b, 5);
+		fHeap.decreaseKey(d, 8);
+		System.out.println(fHeap.toString());
+		System.out.println(fHeap.toString());
 	}
 	public HeapNode min; //why both?
 	private int c;
@@ -106,12 +110,14 @@ public class FibonacciHeap
 		HeapNode curr = x.parent;
 		int numOfCuts = 1;
 		x.key -= diff;
-		if(x.parent == null){
+		if(curr == null){
 			return 0;
 		}
-		x.parent.looserNum ++;
+		curr.looserNum++;
+		//suggestion to change method name to cutNode or updateCutPointers
 		this.update_pointers(x);
 		while(curr != null && curr.looserNum == c){
+			curr.looserNum = 0;
 			if(curr.parent != null){
 				curr.parent.looserNum++;
 				numOfCuts++;
@@ -229,6 +235,10 @@ public class FibonacciHeap
 		return output;
 	}
 
+	/*
+	 * sub routine for cut
+	 * suggestion to change method name to cutNode or updateCutPointers
+	 */
 	public void update_pointers(HeapNode node){
 		if(node.next != null){
 			node.next.prev = node.prev;
