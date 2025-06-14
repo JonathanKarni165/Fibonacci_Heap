@@ -10,17 +10,21 @@ public class FibonacciHeap
 	public static void main(String[] args){
 		FibonacciHeap fHeap = new FibonacciHeap(2);
 		HeapNode a = fHeap.insert(2, "hi");
-		HeapNode b = fHeap.insert(3, "bye");
-		HeapNode c = fHeap.insert(0, "lala");
-		HeapNode d = fHeap.insert(-1, "lalaki");
+		HeapNode b = fHeap.insert(10, "bye");
+		HeapNode c = fHeap.insert(5, "bye");
+		HeapNode d = fHeap.insert(7, "bye");
+		
 
 		System.out.println(fHeap.toString());
 		System.out.println(fHeap.min.key);
 		System.out.println(fHeap.size());
-		fHeap.decreaseKey(b, 5);
-		fHeap.decreaseKey(d, 8);
+		fHeap.decreaseKey(b, 9);
 		System.out.println(fHeap.toString());
 		System.out.println(fHeap.toString());
+		fHeap.link(a, b);
+		//fHeap.link(c, d);
+		fHeap.printHeap();
+		System.out.println(fHeap.min.key);
 	}
 	public HeapNode min; //why both?
 	private int c;
@@ -58,6 +62,8 @@ public class FibonacciHeap
 		HeapNode newNode = new HeapNode();
 		newNode.key = key;
 		newNode.info = info; 
+		newNode.rank = 0;
+
 		if(this.firstRoot == null)
 			this.firstRoot = newNode;
 		else
@@ -110,19 +116,19 @@ public class FibonacciHeap
 		HeapNode curr = x.parent;
 		int numOfCuts = 1;
 		x.key -= diff;
+		this.min = (this.min.key > x.key) ? x : this.min;
 		if(curr == null){
 			return 0;
 		}
 		curr.looserNum++;
 		//suggestion to change method name to cutNode or updateCutPointers
-		this.update_pointers(x);
+		this.updatePointers(x);
 		while(curr != null && curr.looserNum == c){
-			curr.looserNum = 0;
 			curr.looserNum = 0;
 			if(curr.parent != null){
 				curr.parent.looserNum++;
 				numOfCuts++;
-				this.update_pointers(curr);
+				this.updatePointers(curr);
 			}
 			curr = curr.parent;
 		}
@@ -149,23 +155,41 @@ public class FibonacciHeap
 	 */
 	public HeapNode link(HeapNode root1, HeapNode root2)
 	{
-		HeapNode bigNode = root1.key >= root2.key ? root1: root2;
+		HeapNode bigNode = root1.key >= root2.key ? root1 : root2;
 		HeapNode smallNode = root1.key >= root2.key ? root2 : root1;
-		
+
+		//unlink big node
+		bigNode.prev.next = bigNode.next;
+		bigNode.next.prev = bigNode.prev;
+
 		//circular linked list -- so the last is prev of the first
 		HeapNode firstChildTemp = bigNode.child;
-		HeapNode lastChildTemp = bigNode.child.prev;
+		HeapNode lastChildTemp = bigNode.child!=null? bigNode.child.prev : null;
 
 		//link the roots
 		smallNode.child = bigNode;
-		smallNode.next = smallNode;
+		bigNode.parent = smallNode;
 
 		//update second degree node linked list
-		bigNode.next = firstChildTemp;
-		bigNode.prev = lastChildTemp;
-		firstChildTemp.prev = bigNode;
-		lastChildTemp.next = bigNode;
+		if(firstChildTemp != null)
+		{
+			bigNode.next = firstChildTemp;
+			firstChildTemp.prev = bigNode;
+		}
+		else
+		{
+			bigNode.next = bigNode;
+			bigNode.prev = bigNode;
+		}
+			
 
+		if(lastChildTemp != null)
+		{
+			bigNode.prev = lastChildTemp;
+			lastChildTemp.next = bigNode;
+		}
+
+		smallNode.rank++;
 		return smallNode;
 	}
 
@@ -240,14 +264,17 @@ public class FibonacciHeap
 	 * sub routine for cut
 	 * suggestion to change method name to cutNode or updateCutPointers
 	 */
-	public void update_pointers(HeapNode node){
-		if(node.next != null){
-			node.next.prev = node.prev;
-		}
-		if(node.prev != null){
-			node.prev.next = node.next;
-		}
-		if(node.parent.child == node){
+	public void updatePointers(HeapNode node){
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		node.next.prev = node.prev;
+		node.prev.next = node.next;
+		if(node.parent != null){
 			node.parent.child = node.next;
 		}
 		node.parent = null;
@@ -255,7 +282,53 @@ public class FibonacciHeap
 		this.firstRoot.prev = node;
 		this.firstRoot = node;
 		node.prev = null;
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
+		// change to have cycles
 	}
+	
+	public void printHeap() {
+		System.out.println("Fibonacci Heap:");
+		if (firstRoot == null) {
+			System.out.println("(empty)");
+			return;
+		}
+
+		HeapNode current = firstRoot;
+		Set<HeapNode> visited = new HashSet<>(); // Prevent infinite loops in cyclic lists
+		int treeNum = 1;
+
+		while (current != null && !visited.contains(current)) {
+			System.out.println("Tree #" + treeNum + " (root key: " + current.key + "):");
+			printTree(current, 1);
+			visited.add(current);
+			current = current.next;
+			treeNum++;
+		}
+	}
+
+	private void printTree(HeapNode node, int depth) {
+		if (node == null) return;
+
+		for (int i = 0; i < depth; i++) System.out.print("  "); // Indentation
+		System.out.println("Key: " + node.key + ", Info: " + node.info);
+
+		// Recursively print children
+		if (node.child != null) {
+			HeapNode child = node.child;
+			Set<HeapNode> visitedSiblings = new HashSet<>();
+			while (child != null && !visitedSiblings.contains(child)) {
+				printTree(child, depth + 1);
+				visitedSiblings.add(child);
+				child = child.next;
+			}
+		}
+	}
+
 
 	/**
 	 * Class implementing a node in a Fibonacci Heap.
