@@ -13,14 +13,10 @@ public class FibonacciHeap
 		HeapNode b = fHeap.insert(1, "bye");
 		HeapNode c = fHeap.insert(5, "bye");
 		HeapNode d = fHeap.insert(7, "bye");
-		//fHeap.decreaseKey(b, 9);
-		
-		//fHeap.link(b,c);
-		//fHeap.link(a,d);
 		fHeap.link(b,d);
 		fHeap.link(a,c);
 		fHeap.link(a,b);
-		//fHeap.link(c, d);
+		fHeap.decreaseKey(c, 5);
 		fHeap.printHeap();
 		System.out.println(fHeap.min.key + " " + fHeap.firstRoot.key);
 	}
@@ -126,13 +122,13 @@ public class FibonacciHeap
 		}
 		curr.looserNum++;
 		//suggestion to change method name to cutNode or updateCutPointers
-		this.updatePointers(x);
+		this.cutPointerUpdate(x);
 		while(curr != null && curr.looserNum == c){
 			curr.looserNum = 0;
 			if(curr.parent != null){
 				curr.parent.looserNum++;
 				numOfCuts++;
-				this.updatePointers(curr);
+				this.cutPointerUpdate(curr);
 			}
 			curr = curr.parent;
 		}
@@ -159,7 +155,6 @@ public class FibonacciHeap
 	 */
 	public HeapNode link(HeapNode root1, HeapNode root2)
 	{
-		
 		HeapNode bigNode = root1.key > root2.key ? root1 : root2;
 		HeapNode smallNode = root1.key > root2.key ? root2 : root1;
 		
@@ -260,31 +255,22 @@ public class FibonacciHeap
 	 * sub routine for cut
 	 * suggestion to change method name to cutNode or updateCutPointers
 	 */
-	public void updatePointers(HeapNode node){
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
+	public void cutPointerUpdate(HeapNode node){
+		//always has parent
+		//remove from list
+		node.parent.rank--;
 		node.next.prev = node.prev;
 		node.prev.next = node.next;
-		if(node.parent != null){
-			node.parent.child = node.next;
-		}
+
+		//update children
+		node.parent.child = (node.next == node) ? null : node.next;
+		
 		node.parent = null;
 		node.next = this.firstRoot;
+		node.prev = this.firstRoot.prev;
+		this.firstRoot.prev.next = node;
 		this.firstRoot.prev = node;
 		this.firstRoot = node;
-		node.prev = null;
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
-		// change to have cycles
 	}
 	
 	public void printHeap() {
