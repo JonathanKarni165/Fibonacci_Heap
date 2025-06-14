@@ -10,10 +10,10 @@ public class FibonacciHeap
 	public static void main(String[] args){
 		System.out.println("hi");
 	}
-	public HeapNode min;
+	public HeapNode min; //why both?
 	private int c;
 	private ArrayList<HeapNode> rootList;
-	private HeapNode minNode;
+	private HeapNode minNode; //why both?
 	private int size;
 	private int linkCount;
 	private int cutCount;
@@ -28,6 +28,9 @@ public class FibonacciHeap
 	{
 		this.c = c;
 		this.rootList = new ArrayList<HeapNode>();
+		this.size = 0;
+		this.linkCount = 0;
+		this.cutCount = 0;
 	}
 
 	/**
@@ -43,6 +46,9 @@ public class FibonacciHeap
 		newNode.key = key;
 		newNode.info = info; 
 		this.rootList.add(0,newNode);
+		this.minNode = (this.minNode.key > newNode.key) ? newNode : this.minNode;
+		// why is there "min" and "minNode"?
+		this.size++;
 		return newNode;
 	}
 
