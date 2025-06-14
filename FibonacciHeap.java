@@ -13,7 +13,6 @@ public class FibonacciHeap
 	public HeapNode min; //why both?
 	private int c;
 	private ArrayList<HeapNode> rootList;
-	private HeapNode minNode; //why both?
 	private int size;
 	private int linkCount;
 	private int cutCount;
@@ -47,7 +46,7 @@ public class FibonacciHeap
 		newNode.key = key;
 		newNode.info = info; 
 		this.rootList.add(0,newNode);
-		this.minNode = (this.minNode.key > newNode.key) ? newNode : this.minNode;
+		this.min = (this.min.key > newNode.key) ? newNode : this.min;
 		// why is there "min" and "minNode"?
 		this.size++;
 		return newNode;
@@ -60,7 +59,7 @@ public class FibonacciHeap
 	 */
 	public HeapNode findMin()
 	{
-		return this.minNode; // should be replaced by student code
+		return this.min; // should be replaced by student code
 	}
 
 	/**
