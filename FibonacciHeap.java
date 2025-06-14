@@ -10,21 +10,19 @@ public class FibonacciHeap
 	public static void main(String[] args){
 		FibonacciHeap fHeap = new FibonacciHeap(2);
 		HeapNode a = fHeap.insert(2, "hi");
-		HeapNode b = fHeap.insert(10, "bye");
+		HeapNode b = fHeap.insert(1, "bye");
 		HeapNode c = fHeap.insert(5, "bye");
 		HeapNode d = fHeap.insert(7, "bye");
+		//fHeap.decreaseKey(b, 9);
 		
-
-		System.out.println(fHeap.toString());
-		System.out.println(fHeap.min.key);
-		System.out.println(fHeap.size());
-		fHeap.decreaseKey(b, 9);
-		System.out.println(fHeap.toString());
-		System.out.println(fHeap.toString());
-		fHeap.link(a, b);
+		//fHeap.link(b,c);
+		//fHeap.link(a,d);
+		fHeap.link(b,d);
+		fHeap.link(a,c);
+		fHeap.link(a,b);
 		//fHeap.link(c, d);
 		fHeap.printHeap();
-		System.out.println(fHeap.min.key);
+		System.out.println(fHeap.min.key + " " + fHeap.firstRoot.key);
 	}
 	public HeapNode min; //why both?
 	private int c;
@@ -65,9 +63,15 @@ public class FibonacciHeap
 		newNode.rank = 0;
 
 		if(this.firstRoot == null)
+		{
+			newNode.next = newNode;
+			newNode.prev = newNode;
 			this.firstRoot = newNode;
+		}
 		else
 		{
+			this.firstRoot.prev.next = newNode;
+			newNode.prev  = this.firstRoot.prev;
 			this.firstRoot.prev = newNode;
 			newNode.next = this.firstRoot;
 			this.firstRoot = newNode;
@@ -155,40 +159,32 @@ public class FibonacciHeap
 	 */
 	public HeapNode link(HeapNode root1, HeapNode root2)
 	{
-		HeapNode bigNode = root1.key >= root2.key ? root1 : root2;
-		HeapNode smallNode = root1.key >= root2.key ? root2 : root1;
-
+		
+		HeapNode bigNode = root1.key > root2.key ? root1 : root2;
+		HeapNode smallNode = root1.key > root2.key ? root2 : root1;
+		
 		//unlink big node
+		if (this.firstRoot == bigNode)
+			this.firstRoot = bigNode.next;
+		
 		bigNode.prev.next = bigNode.next;
 		bigNode.next.prev = bigNode.prev;
-
-		//circular linked list -- so the last is prev of the first
-		HeapNode firstChildTemp = bigNode.child;
-		HeapNode lastChildTemp = bigNode.child!=null? bigNode.child.prev : null;
-
-		//link the roots
-		smallNode.child = bigNode;
-		bigNode.parent = smallNode;
-
-		//update second degree node linked list
-		if(firstChildTemp != null)
+		
+		if (smallNode.child != null)
 		{
-			bigNode.next = firstChildTemp;
-			firstChildTemp.prev = bigNode;
+			smallNode.child.prev.next = bigNode;
+			bigNode.prev = smallNode.child.prev;
+			smallNode.child.prev = bigNode;
+			bigNode.next = smallNode.child;
+			smallNode.child = bigNode;
 		}
 		else
 		{
+			smallNode.child = bigNode;
 			bigNode.next = bigNode;
 			bigNode.prev = bigNode;
 		}
-			
-
-		if(lastChildTemp != null)
-		{
-			bigNode.prev = lastChildTemp;
-			lastChildTemp.next = bigNode;
-		}
-
+		
 		smallNode.rank++;
 		return smallNode;
 	}
