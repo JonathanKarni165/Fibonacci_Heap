@@ -16,7 +16,7 @@ public class FibonacciHeap
 		fHeap.link(b,d);
 		fHeap.link(a,c);
 		fHeap.link(a,b);
-		fHeap.decreaseKey(c, 5);
+		fHeap.decreaseKey(a, 5);
 		fHeap.printHeap();
 		System.out.println(fHeap.min.key + " " + fHeap.firstRoot.key);
 	}
@@ -179,7 +179,7 @@ public class FibonacciHeap
 			bigNode.next = bigNode;
 			bigNode.prev = bigNode;
 		}
-		
+		bigNode.parent = smallNode;
 		smallNode.rank++;
 		return smallNode;
 	}
