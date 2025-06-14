@@ -98,6 +98,31 @@ public class FibonacciHeap
 		return 46; // should be replaced by student code
 	}
 
+	/**
+	 * 
+	 * link two trees with the same degree
+	 * @param root1 - first tree root to be linked 
+	 * @param root2 - first tree root to be linked 
+	 */
+	public HeapNode link(HeapNode root1, HeapNode root2)
+	{
+		HeapNode bigNode = root1.key >= root2.key ? root1: root2;
+		HeapNode smallNode = root1.key >= root2.key ? root2 : root1;
+		
+		//circular linked list -- so the last is prev of the first
+		HeapNode firstChildTemp = bigNode.child;
+		HeapNode lastChildTemp = bigNode.child.prev;
+
+		//link the roots
+		bigNode.child = smallNode;
+
+		//update second degree node linked list
+		smallNode.next = firstChildTemp;
+		firstChildTemp.prev = smallNode;
+		lastChildTemp.next = smallNode;
+
+		return bigNode;
+	}
 
 	/**
 	 * 
