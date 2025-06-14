@@ -103,7 +103,23 @@ public class FibonacciHeap
 	 */
 	public int decreaseKey(HeapNode x, int diff) 
 	{    
-		return 46; // should be replaced by student code
+		HeapNode curr = x.parent;
+		int numOfCuts = 1;
+		x.key -= diff;
+		if(x.parent == null){
+			return 0;
+		}
+		x.parent.looserNum ++;
+		this.update_pointers(x);
+		while(curr != null && curr.looserNum == c){
+			if(curr.parent != null){
+				curr.parent.looserNum++;
+				numOfCuts++;
+				this.update_pointers(curr);
+			}
+			curr = curr.parent;
+		}
+		return numOfCuts; // should be replaced by student code
 	}
 
 	/**
@@ -213,6 +229,23 @@ public class FibonacciHeap
 		return output;
 	}
 
+	public void update_pointers(HeapNode node){
+		if(node.next != null){
+			node.next.prev = node.prev;
+		}
+		if(node.prev != null){
+			node.prev.next = node.next;
+		}
+		if(node.parent.child == node){
+			node.parent.child = node.next;
+		}
+		node.parent = null;
+		node.next = this.firstRoot;
+		this.firstRoot.prev = node;
+		this.firstRoot = node;
+		node.prev = null;
+	}
+
 	/**
 	 * Class implementing a node in a Fibonacci Heap.
 	 *  
@@ -225,5 +258,6 @@ public class FibonacciHeap
 		public HeapNode prev;
 		public HeapNode parent;
 		public int rank;
+		public int looserNum;
 	}
 }
