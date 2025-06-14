@@ -122,6 +122,7 @@ public class FibonacciHeap
 	 * link two trees with the same degree
 	 * @param root1 - first tree root to be linked 
 	 * @param root2 - first tree root to be linked 
+	 * 
 	 */
 	public HeapNode link(HeapNode root1, HeapNode root2)
 	{
@@ -133,14 +134,16 @@ public class FibonacciHeap
 		HeapNode lastChildTemp = bigNode.child.prev;
 
 		//link the roots
-		bigNode.child = smallNode;
+		smallNode.child = bigNode;
+		smallNode.next = smallNode;
 
 		//update second degree node linked list
-		smallNode.next = firstChildTemp;
-		firstChildTemp.prev = smallNode;
-		lastChildTemp.next = smallNode;
+		bigNode.next = firstChildTemp;
+		bigNode.prev = lastChildTemp;
+		firstChildTemp.prev = bigNode;
+		lastChildTemp.next = bigNode;
 
-		return bigNode;
+		return smallNode;
 	}
 
 	/**
