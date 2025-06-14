@@ -118,6 +118,7 @@ public class FibonacciHeap
 		this.update_pointers(x);
 		while(curr != null && curr.looserNum == c){
 			curr.looserNum = 0;
+			curr.looserNum = 0;
 			if(curr.parent != null){
 				curr.parent.looserNum++;
 				numOfCuts++;
