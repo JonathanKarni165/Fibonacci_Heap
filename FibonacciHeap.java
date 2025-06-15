@@ -9,34 +9,57 @@ public class FibonacciHeap
 {
 	public static final double PHI = 1.6180339887;
 	public static void main(String[] args){
-		FibonacciHeap fHeap = new FibonacciHeap(2);
-		HeapNode a = fHeap.insert(2, "hi");
-		HeapNode b = fHeap.insert(1, "bye");
-		HeapNode c = fHeap.insert(5, "bye");
-		HeapNode d = fHeap.insert(7, "bye");
+		FibonacciHeap fHeap1 = new FibonacciHeap(2);
+		HeapNode a = fHeap1.insert(6, "hi");
+		HeapNode b = fHeap1.insert(2, "hi");
+		HeapNode c = fHeap1.insert(1, "hi");
+		HeapNode d = fHeap1.insert(9, "hi");
+		HeapNode e = fHeap1.insert(11, "hi");
+		HeapNode f = fHeap1.insert(10, "hi");
+		HeapNode g = fHeap1.insert(12, "hi");
+		HeapNode h = fHeap1.insert(19, "hi");
 
-		//fHeap.printHeap();
-		HeapNode e = fHeap.insert(3, "kiko");
-		HeapNode f = fHeap.insert(4, "liko");
+		
+		fHeap1.deleteMin();
+		
 
-		//fHeap.printHeap();
-		HeapNode g = fHeap.insert(10, "wow");
-		HeapNode h = fHeap.insert(15, "no");
-		fHeap.printHeap();
-		System.out.println("*****************************************************************************************************");
-		fHeap.delete(e);
-		fHeap.printHeap();
-		System.out.println("*****************************************************************************************************");
-		fHeap.delete(g);
-		fHeap.printHeap();
-		System.out.println("*****************************************************************************************************");
-		fHeap.delete(c);
-		fHeap.printHeap();
-		System.out.println("*****************************************************************************************************");
+		FibonacciHeap fHeap2 = new FibonacciHeap(2);
+		HeapNode i = fHeap2.insert(20, "hi");
+		HeapNode j = fHeap2.insert(24, "hi");
+		HeapNode k = fHeap2.insert(22, "hi");
+		HeapNode l = fHeap2.insert(27, "hi");
+		HeapNode m = fHeap2.insert(25, "hi");
+
+		fHeap2.deleteMin();
+		fHeap1.meld(fHeap2);
+		fHeap1.deleteMin();
+
+		System.out.println("\nheap1\n\n");
+		fHeap1.printHeap();
+
+		System.out.println("\nafter delete 27\n");
+		fHeap1.delete(l);
+		fHeap1.printHeap();
+
+		System.out.println("\nafter delete 25\n");
+		fHeap1.delete(m);
+		fHeap1.printHeap();
+
+		System.out.println("\nafter delete 24\n");
+		fHeap1.delete(j);
+		fHeap1.printHeap();
+
+		System.out.println("\nafter delete 12\n");
+		fHeap1.delete(g);
+		fHeap1.printHeap();
+
+
+
 
 
 		
-		System.out.println(fHeap.min.key + " " + fHeap.firstRoot.key);
+
+
 	}
 	public HeapNode min;
 	private int c;
@@ -187,6 +210,14 @@ public class FibonacciHeap
 	public int deleteMin()
 	{
 
+		if(this.size == 1){
+			this.size = 0;
+			this.treeCount = 0;
+			this.min = null;
+			this.firstRoot = null;
+			return 0;
+		}
+
 		if(this.min.next != this.min){
 			if(this.min.child != null){
 				HeapNode lastChild = this.min.child.prev;
@@ -221,16 +252,14 @@ public class FibonacciHeap
 		HeapNode curr = this.min.child;
 		for(int i=0;i<this.min.rank;i++){
 			curr.parent = null;
-			//check line below
-			this.cutCount++;
-			//check line above
+
 			curr = curr.next;
 		}
 		this.treeCount--;
 		this.treeCount += this.min.rank;
 		this.min = this.firstRoot;
 		curr = this.firstRoot.next;
-		printHeap();
+		//printHeap();
 		for(int i=0;i<this.treeCount-1;i++){
 			this.min = (curr.key < this.min.key) ? curr : this.min;
 			curr = curr.next;
@@ -361,7 +390,31 @@ public class FibonacciHeap
 	 */
 	public void meld(FibonacciHeap heap2)
 	{
-		return; // should be replaced by student code   		
+		this.min = this.min.key > heap2.min.key ? heap2.min : this.min;
+		this.treeCount += heap2.treeCount;
+		this.size += heap2.size;
+		this.linkCount += heap2.linkCount;
+		this.cutCount += heap2.cutCount;
+
+		if(this.firstRoot == null)
+		{
+			this.firstRoot = heap2.firstRoot;
+			
+		}
+		if(heap2.firstRoot != null && this.firstRoot != null)
+		{
+			HeapNode first = heap2.firstRoot;
+			HeapNode last = heap2.firstRoot.prev;
+
+			this.firstRoot.prev.next = first;
+			first.prev = this.firstRoot.prev;
+			this.firstRoot.prev = last;
+			last.next = this.firstRoot;
+		}
+		
+		heap2.firstRoot = null;
+		heap2.min = null;
+		heap2 = null;
 	}
 
 	/**
@@ -445,7 +498,7 @@ public class FibonacciHeap
 		if (node == null) return;
 
 		for (int i = 0; i < depth; i++) System.out.print("  "); // Indentation
-		System.out.println("Key: " + node.key + ", Info: " + node.info);
+		System.out.println("Key: " + node.key + ", looser: " + node.looserNum);
 
 		// Recursively print children
 		if (node.child != null) {
@@ -477,5 +530,11 @@ public class FibonacciHeap
 		public HeapNode parent;
 		public int rank;
 		public int looserNum;
+
+		
+		public int getKey()
+		{
+			return this.key;
+		}
 	}
 }
