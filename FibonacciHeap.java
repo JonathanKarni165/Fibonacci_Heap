@@ -22,7 +22,7 @@ public class FibonacciHeap
 		fHeap.printHeap();
 		System.out.println(fHeap.min.key + " " + fHeap.firstRoot.key);
 	}
-	public HeapNode min; //why both?
+	public HeapNode min;
 	private int c;
 	private HeapNode firstRoot;
 	private int size;
@@ -114,9 +114,12 @@ public class FibonacciHeap
 
 		//pop out of bucket list and build heap
 		int i=0;
+		int newTreeCount = 0;
 		while (bucketList.get(i) == null)
 			i++;
 		cur = bucketList.get(i);
+		newTreeCount++;
+
 		this.firstRoot = cur;
 		HeapNode temp;
 		i++;
@@ -129,12 +132,13 @@ public class FibonacciHeap
 				cur.next = temp;
 				temp.prev = cur;
 				cur = temp;
+				newTreeCount++;
 			}
 			i++;
 		}
 		cur.next = firstRoot;
 		firstRoot.prev = cur;
-
+		this.treeCount = newTreeCount;
 	}
 
 	/**
@@ -176,6 +180,7 @@ public class FibonacciHeap
 		if(curr == null){
 			return 0;
 		}
+		this.treeCount++;
 		curr.looserNum++;
 		//suggestion to change method name to cutNode or updateCutPointers
 		this.cutPointerUpdate(x);
@@ -185,6 +190,7 @@ public class FibonacciHeap
 				curr.parent.looserNum++;
 				numOfCuts++;
 				this.cutPointerUpdate(curr);
+				this.treeCount++;
 			}
 			curr = curr.parent;
 		}
