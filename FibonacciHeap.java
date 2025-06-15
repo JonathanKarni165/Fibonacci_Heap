@@ -15,35 +15,10 @@ public class FibonacciHeap
 		HeapNode c = fHeap.insert(5, "bye");
 		HeapNode d = fHeap.insert(7, "bye");
 
-		fHeap.treeCount = 1;
-		fHeap.consolidate();
-		fHeap.printHeap();
-		System.out.println();
-		
-		fHeap.deleteMin();
-		
-		fHeap.printHeap();
-		System.out.println();
-
-		fHeap.deleteMin();
-		fHeap.printHeap();
-		System.out.println();
-
-		fHeap.deleteMin();
-		fHeap.printHeap();
-		System.out.println();
-
-		fHeap.deleteMin();
-		fHeap.printHeap();
-		System.out.println();
-		
-		
-		/**
-		 * fHeap.consolidate();
 		//fHeap.printHeap();
 		fHeap.insert(3, "kiko");
 		fHeap.insert(4, "liko");
-		fHeap.consolidate();
+
 		//fHeap.printHeap();
 		fHeap.insert(10, "wow");
 		fHeap.insert(15, "no");
@@ -58,10 +33,6 @@ public class FibonacciHeap
 		fHeap.deleteMin();
 		fHeap.printHeap();
 		System.out.println("*****************************************************************************************************");
-
-		 * 
-		 * 
-		 */
 
 
 		
@@ -131,7 +102,7 @@ public class FibonacciHeap
 	private int consolidate()
 	{
 		int numOfLinks = 0;
-		double maxSize = logBase(PHI, this.size);
+		double maxSize = logBase(PHI, this.size)+1;
 		maxSize = Math.ceil(maxSize);
 		ArrayList<HeapNode> bucketList = new ArrayList<HeapNode>((int)maxSize);
 		for(int i=0; i<maxSize ; i++)
@@ -139,10 +110,17 @@ public class FibonacciHeap
 
 		//insert to bucket list
 		HeapNode cur = this.firstRoot;
+
+		System.out.println(this.treeCount + " tree count");
+		System.out.println(cur.rank + " rank");
+
 		for(int i=0; i<this.treeCount; i++)
 		{
 			if(bucketList.get(cur.rank) == null)
+			{
 				bucketList.set(cur.rank, cur);
+				cur = cur.next;
+			}
 			else
 			{
 				int curRank = cur.rank;
@@ -156,8 +134,8 @@ public class FibonacciHeap
 					curRank++;
 				}
 				bucketList.set(curRank, linkCur);
+				cur = linkCur.next;
 			}
-			cur = cur.next;
 		}
 
 		//pop out of bucket list and build heap
@@ -212,10 +190,11 @@ public class FibonacciHeap
 		if(this.min.next != this.min){
 			if(this.min.child != null){
 				HeapNode lastChild = this.min.child.prev;
-				this.min.child.prev.next = this.min.next;
+				lastChild.next = this.min.next;
 				this.min.child.prev = this.min.prev;
 				this.min.prev.next = this.min.child;
 				this.min.next.prev = lastChild;
+				
 			}
 			else{
 				this.min.prev.next = this.min.next;
@@ -251,6 +230,7 @@ public class FibonacciHeap
 		this.treeCount += this.min.rank;
 		this.min = this.firstRoot;
 		curr = this.firstRoot.next;
+		printHeap();
 		for(int i=0;i<this.treeCount-1;i++){
 			this.min = (curr.key < this.min.key) ? curr : this.min;
 			curr = curr.next;
