@@ -16,21 +16,21 @@ public class FibonacciHeap
 		HeapNode d = fHeap.insert(7, "bye");
 
 		//fHeap.printHeap();
-		fHeap.insert(3, "kiko");
-		fHeap.insert(4, "liko");
+		HeapNode e = fHeap.insert(3, "kiko");
+		HeapNode f = fHeap.insert(4, "liko");
 
 		//fHeap.printHeap();
-		fHeap.insert(10, "wow");
-		fHeap.insert(15, "no");
+		HeapNode g = fHeap.insert(10, "wow");
+		HeapNode h = fHeap.insert(15, "no");
 		fHeap.printHeap();
 		System.out.println("*****************************************************************************************************");
-		fHeap.deleteMin();
+		fHeap.delete(e);
 		fHeap.printHeap();
 		System.out.println("*****************************************************************************************************");
-		fHeap.deleteMin();
+		fHeap.delete(g);
 		fHeap.printHeap();
 		System.out.println("*****************************************************************************************************");
-		fHeap.deleteMin();
+		fHeap.delete(c);
 		fHeap.printHeap();
 		System.out.println("*****************************************************************************************************");
 
@@ -236,9 +236,9 @@ public class FibonacciHeap
 			curr = curr.next;
 		}
 		this.size--;
-		System.out.println("before consolidate:");
-		this.printHeap();
-		System.out.println("*****************************************************************************************************");
+		// System.out.println("before consolidate:");
+		// this.printHeap();
+		// System.out.println("*****************************************************************************************************");
 		int links = this.consolidate();
 		return links; // should be replaced by student code
 
@@ -287,8 +287,11 @@ public class FibonacciHeap
 	 *
 	 */
 	public int delete(HeapNode x) 
-	{    
-		return 46; // should be replaced by student code
+	{   
+		int diff = x.key-this.min.key; //might not work for pre condition in decrease key
+		this.decreaseKey(x, diff+1); //should i put the value somewhere?
+		int links = deleteMin();
+		return links; // should be replaced by student code
 	}
 
 	/**
