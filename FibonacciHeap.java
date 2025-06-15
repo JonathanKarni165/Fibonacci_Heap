@@ -7,16 +7,18 @@ import java.util.*;
  */
 public class FibonacciHeap
 {
+	public static final double PHI = 1.6180339887;
 	public static void main(String[] args){
 		FibonacciHeap fHeap = new FibonacciHeap(2);
 		HeapNode a = fHeap.insert(2, "hi");
 		HeapNode b = fHeap.insert(1, "bye");
 		HeapNode c = fHeap.insert(5, "bye");
 		HeapNode d = fHeap.insert(7, "bye");
-		fHeap.link(b,d);
-		fHeap.link(a,c);
-		fHeap.link(a,b);
-		fHeap.decreaseKey(a, 5);
+		fHeap.consolidate();
+		fHeap.printHeap();
+		fHeap.insert(3, "kiko");
+		fHeap.insert(4, "liko");
+		fHeap.consolidate();
 		fHeap.printHeap();
 		System.out.println(fHeap.min.key + " " + fHeap.firstRoot.key);
 	}
@@ -79,6 +81,60 @@ public class FibonacciHeap
 		this.size++;
 		this.treeCount++;
 		return newNode;
+	}
+
+	private void consolidate()
+	{
+		double maxSize = logBase(PHI, this.size);
+		maxSize = Math.ceil(maxSize);
+		ArrayList<HeapNode> bucketList = new ArrayList<HeapNode>((int)maxSize);
+		for(int i=0; i<maxSize ; i++)
+			bucketList.add(null);
+
+		//insert to bucket list
+		HeapNode cur = this.firstRoot;
+		for(int i=0; i<this.treeCount; i++)
+		{
+			if(bucketList.get(cur.rank) == null)
+				bucketList.set(cur.rank, cur);
+			else
+			{
+				int curRank = cur.rank;
+				HeapNode linkCur = cur;
+				while (bucketList.get(curRank) != null) 
+				{
+					linkCur = link(bucketList.get(curRank), linkCur);
+					bucketList.set(curRank, null);
+					curRank++;
+				}
+				bucketList.set(curRank, linkCur);
+			}
+			cur = cur.next;
+		}
+
+		//pop out of bucket list and build heap
+		int i=0;
+		while (bucketList.get(i) == null)
+			i++;
+		cur = bucketList.get(i);
+		this.firstRoot = cur;
+		HeapNode temp;
+		i++;
+
+		while(i < (int)maxSize)
+		{
+			if (bucketList.get(i) != null)
+			{
+				temp = bucketList.get(i);
+				cur.next = temp;
+				temp.prev = cur;
+				cur = temp;
+			}
+			i++;
+		}
+		cur.next = firstRoot;
+		firstRoot.prev = cur;
+
 	}
 
 	/**
@@ -310,6 +366,10 @@ public class FibonacciHeap
 			}
 		}
 	}
+
+	public static double logBase(double base, double value) {
+        return Math.log(value) / Math.log(base);
+   }
 
 
 	/**
