@@ -14,12 +14,57 @@ public class FibonacciHeap
 		HeapNode b = fHeap.insert(1, "bye");
 		HeapNode c = fHeap.insert(5, "bye");
 		HeapNode d = fHeap.insert(7, "bye");
+
+		fHeap.treeCount = 1;
 		fHeap.consolidate();
 		fHeap.printHeap();
+		System.out.println();
+		
+		fHeap.deleteMin();
+		
+		fHeap.printHeap();
+		System.out.println();
+
+		fHeap.deleteMin();
+		fHeap.printHeap();
+		System.out.println();
+
+		fHeap.deleteMin();
+		fHeap.printHeap();
+		System.out.println();
+
+		fHeap.deleteMin();
+		fHeap.printHeap();
+		System.out.println();
+		
+		
+		/**
+		 * fHeap.consolidate();
+		//fHeap.printHeap();
 		fHeap.insert(3, "kiko");
 		fHeap.insert(4, "liko");
 		fHeap.consolidate();
+		//fHeap.printHeap();
+		fHeap.insert(10, "wow");
+		fHeap.insert(15, "no");
 		fHeap.printHeap();
+		System.out.println("*****************************************************************************************************");
+		fHeap.deleteMin();
+		fHeap.printHeap();
+		System.out.println("*****************************************************************************************************");
+		fHeap.deleteMin();
+		fHeap.printHeap();
+		System.out.println("*****************************************************************************************************");
+		fHeap.deleteMin();
+		fHeap.printHeap();
+		System.out.println("*****************************************************************************************************");
+
+		 * 
+		 * 
+		 */
+
+
+		
 		System.out.println(fHeap.min.key + " " + fHeap.firstRoot.key);
 	}
 	public HeapNode min;
@@ -83,8 +128,9 @@ public class FibonacciHeap
 		return newNode;
 	}
 
-	private void consolidate()
+	private int consolidate()
 	{
+		int numOfLinks = 0;
 		double maxSize = logBase(PHI, this.size);
 		maxSize = Math.ceil(maxSize);
 		ArrayList<HeapNode> bucketList = new ArrayList<HeapNode>((int)maxSize);
@@ -104,6 +150,8 @@ public class FibonacciHeap
 				while (bucketList.get(curRank) != null) 
 				{
 					linkCur = link(bucketList.get(curRank), linkCur);
+					numOfLinks++;
+					this.linkCount++;
 					bucketList.set(curRank, null);
 					curRank++;
 				}
@@ -139,6 +187,7 @@ public class FibonacciHeap
 		cur.next = firstRoot;
 		firstRoot.prev = cur;
 		this.treeCount = newTreeCount;
+		return numOfLinks;
 	}
 
 	/**
@@ -159,7 +208,59 @@ public class FibonacciHeap
 	 */
 	public int deleteMin()
 	{
-		return 46; // should be replaced by student code
+
+		if(this.min.next != this.min){
+			if(this.min.child != null){
+				HeapNode lastChild = this.min.child.prev;
+				this.min.child.prev.next = this.min.next;
+				this.min.child.prev = this.min.prev;
+				this.min.prev.next = this.min.child;
+				this.min.next.prev = lastChild;
+			}
+			else{
+				this.min.prev.next = this.min.next;
+				this.min.next.prev = this.min.prev;
+			}
+		}
+		
+
+		if(this.firstRoot == this.min){
+			if(this.min.prev != this.min){
+				this.firstRoot = this.min.prev;
+			}
+			else{
+				if(this.min.child != null){
+					this.firstRoot = this.min.child;
+				}
+				else{
+					this.firstRoot = null;
+				}
+			}
+		}
+
+
+		HeapNode curr = this.min.child;
+		for(int i=0;i<this.min.rank;i++){
+			curr.parent = null;
+			//check line below
+			this.cutCount++;
+			//check line above
+			curr = curr.next;
+		}
+		this.treeCount--;
+		this.treeCount += this.min.rank;
+		this.min = this.firstRoot;
+		curr = this.firstRoot.next;
+		for(int i=0;i<this.treeCount-1;i++){
+			this.min = (curr.key < this.min.key) ? curr : this.min;
+			curr = curr.next;
+		}
+		this.size--;
+		System.out.println("before consolidate:");
+		this.printHeap();
+		System.out.println("*****************************************************************************************************");
+		int links = this.consolidate();
+		return links; // should be replaced by student code
 
 	}
 
@@ -184,12 +285,14 @@ public class FibonacciHeap
 		curr.looserNum++;
 		//suggestion to change method name to cutNode or updateCutPointers
 		this.cutPointerUpdate(x);
+		this.cutCount++;
 		while(curr != null && curr.looserNum == c){
 			curr.looserNum = 0;
 			if(curr.parent != null){
 				curr.parent.looserNum++;
 				numOfCuts++;
 				this.cutPointerUpdate(curr);
+				this.cutCount++;
 				this.treeCount++;
 			}
 			curr = curr.parent;
