@@ -8,6 +8,7 @@ import java.util.*;
 public class FibonacciHeap
 {
 	public static final double PHI = 1.6180339887;
+	//TODO: delete main
 	public static void main(String[] args){
 		FibonacciHeap fHeap1 = new FibonacciHeap(2);
 		HeapNode a = fHeap1.insert(6, "hi");
@@ -52,13 +53,6 @@ public class FibonacciHeap
 		System.out.println("\nafter delete 12\n");
 		fHeap1.delete(g);
 		fHeap1.printHeap();
-
-
-
-
-
-		
-
 
 	}
 	public HeapNode min;
@@ -196,6 +190,7 @@ public class FibonacciHeap
 	 * Return the minimal HeapNode, null if empty.
 	 *
 	 */
+	//just return pointer???????????????????????????????????
 	public HeapNode findMin()
 	{
 		return this.min; // should be replaced by student code
