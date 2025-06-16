@@ -12,8 +12,8 @@ public class experiment1 {
         ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>(); 
 
         
-
-        for (int i = 0; i < 464646; i++) {
+        int NUM = 464646;
+        for (int i = 0; i < NUM; i++) {
             itemsToInsert.add(i);
         }
         Collections.shuffle(itemsToInsert);
@@ -21,8 +21,9 @@ public class experiment1 {
         long startTime1 = System.nanoTime();
 
         FibonacciHeap fb = new FibonacciHeap(2);
-        for (int i = 0; i < 464646; i++) {
-            nodes.add(fb.insert(i, null));
+        for (int i = 0; i < NUM; i++) {
+            nodes.add(fb.insert(itemsToInsert.get(i), null));
+            //fb.printHeap();
         }
 
         long endTime1 = System.nanoTime();
@@ -31,13 +32,19 @@ public class experiment1 {
         Collections.sort(nodes, new CompNode());
 
         long startTime2 = System.nanoTime();
-
+        System.out.println("\n\n\n");
         fb.deleteMin();
 
         //now delete max until 46 left
         int i=0;
-        while (fb.size() > 46) {
+        while (fb.size() > 5) {
             fb.delete(nodes.get(i));
+            if(fb.size() < 10)
+            {
+                System.out.println("\n\n\n");
+                fb.printHeap();
+            }
+            
             i++;
         }
 
