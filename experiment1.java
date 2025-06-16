@@ -38,6 +38,11 @@ public class experiment1 {
         int i=0;
         while (fb.size() > 46) {
             fb.delete(nodes.get(i));
+            if(fb.size() < 50){
+                System.out.println("************************************************************************");
+                fb.printHeap();
+                System.out.println("************************************************************************");
+            }
             i++;
         }
 
