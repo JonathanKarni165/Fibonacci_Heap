@@ -13,7 +13,7 @@ public class experiment1 {
 
         
 
-        for (int i = 0; i < 464646; i++) {
+        for (int i = 1; i <= 464646; i++) {
             itemsToInsert.add(i);
         }
         Collections.shuffle(itemsToInsert);
@@ -22,7 +22,7 @@ public class experiment1 {
 
         FibonacciHeap fb = new FibonacciHeap(2);
         for (int i = 0; i < 464646; i++) {
-            nodes.add(fb.insert(i, null));
+            nodes.add(fb.insert(itemsToInsert.get(i), null));
         }
 
         long endTime1 = System.nanoTime();

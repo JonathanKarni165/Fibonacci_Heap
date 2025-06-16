@@ -14,45 +14,13 @@ public class FibonacciHeap
 		HeapNode a = fHeap1.insert(6, "hi");
 		HeapNode b = fHeap1.insert(2, "hi");
 		HeapNode c = fHeap1.insert(1, "hi");
-		HeapNode d = fHeap1.insert(9, "hi");
-		HeapNode e = fHeap1.insert(11, "hi");
-		HeapNode f = fHeap1.insert(10, "hi");
-		HeapNode g = fHeap1.insert(12, "hi");
-		HeapNode h = fHeap1.insert(19, "hi");
+		
 
 		
 		fHeap1.deleteMin();
+		fHeap1.printHeap();
 		
 
-		FibonacciHeap fHeap2 = new FibonacciHeap(2);
-		HeapNode i = fHeap2.insert(20, "hi");
-		HeapNode j = fHeap2.insert(24, "hi");
-		HeapNode k = fHeap2.insert(22, "hi");
-		HeapNode l = fHeap2.insert(27, "hi");
-		HeapNode m = fHeap2.insert(25, "hi");
-
-		fHeap2.deleteMin();
-		fHeap1.meld(fHeap2);
-		fHeap1.deleteMin();
-
-		System.out.println("\nheap1\n\n");
-		fHeap1.printHeap();
-
-		System.out.println("\nafter delete 27\n");
-		fHeap1.delete(l);
-		fHeap1.printHeap();
-
-		System.out.println("\nafter delete 25\n");
-		fHeap1.delete(m);
-		fHeap1.printHeap();
-
-		System.out.println("\nafter delete 24\n");
-		fHeap1.delete(j);
-		fHeap1.printHeap();
-
-		System.out.println("\nafter delete 12\n");
-		fHeap1.delete(g);
-		fHeap1.printHeap();
 
 	}
 	public HeapNode min;
@@ -116,7 +84,110 @@ public class FibonacciHeap
 		return newNode;
 	}
 
+
+
+
+
+
+
 	private int consolidate()
+	{
+		int numOfLinks = 0;
+
+		HeapNode[] conArr = new HeapNode[1];
+		HeapNode temp = null;
+
+		int prevTreeCount = this.treeCount;
+		
+
+		//HeapNode curr = this.firstRoot;
+
+		for(int i=0;i<prevTreeCount;i++){
+
+
+			//detach firstRoot from heap and change pointers (temp holds the detatched part)
+			if(i != prevTreeCount-1){
+				this.firstRoot.next.prev = this.firstRoot.prev;
+				this.firstRoot.prev.next = this.firstRoot.next;
+
+				temp = this.firstRoot;
+				this.firstRoot = this.firstRoot.next;
+
+				temp.next = temp;
+				temp.prev = temp;
+
+				this.firstRoot = this.firstRoot.next;
+			}
+			else{
+				temp = this.firstRoot;
+				this.firstRoot = null;
+				this.min = null;
+			}
+			
+			while(temp.rank >= conArr.length){
+				conArr = incArr(conArr);
+			}
+			while(conArr[temp.rank] != null){
+				temp = this.link(temp, conArr[temp.rank]);
+				conArr[temp.rank-1] = null;
+				numOfLinks++;
+				this.linkCount++;
+				if(temp.rank >= conArr.length){
+					conArr = incArr(conArr);
+				}
+			}
+			conArr[temp.rank] = temp;
+			
+		}
+
+		this.treeCount = 0;
+		for(int i=conArr.length-1; i>=0;i--){
+			if(conArr[i] != null){
+				
+
+				if(this.treeCount == 0){
+					this.firstRoot = conArr[i];
+					this.min = conArr[i];
+				}
+
+				else{
+					conArr[i].next = this.firstRoot;
+					conArr[i].prev = this.firstRoot.prev;
+
+					this.firstRoot = conArr[i];
+
+					this.firstRoot.prev.next = this.firstRoot;
+					this.firstRoot.next.prev = this.firstRoot;
+					
+					this.min = (this.min.key < this.firstRoot.key) ? this.min : this.firstRoot;
+				}
+
+				this.treeCount++;
+				conArr[i] = null;
+				
+			}
+		}
+		
+		return numOfLinks;
+	}
+
+
+
+
+	private HeapNode[] incArr(HeapNode[] arr){
+		HeapNode[] newArr = new HeapNode[arr.length*2];
+		for(int i=0;i<arr.length;i++){
+			newArr[i] = arr[i];
+		}
+		return newArr;
+	}
+
+
+
+
+
+
+	private int consolidate1()
 	{
 		int numOfLinks = 0;
 		double maxSize = logBase(PHI, this.size)+1;
@@ -148,7 +219,7 @@ public class FibonacciHeap
 					numOfLinks++;
 					this.linkCount++;
 					bucketList.set(curRank, null);
-					curRank++;
+					//curRank++;
 				}
 				bucketList.set(curRank, linkCur);
 				cur = linkCur.next;
@@ -331,8 +402,10 @@ public class FibonacciHeap
 		HeapNode smallNode = root1.key > root2.key ? root2 : root1;
 		
 		//unlink big node
-		if (this.firstRoot == bigNode)
-			this.firstRoot = bigNode.next;
+
+
+		// if (this.firstRoot == bigNode)
+		// 	this.firstRoot = bigNode.next;
 		
 		bigNode.prev.next = bigNode.next;
 		bigNode.next.prev = bigNode.prev;
