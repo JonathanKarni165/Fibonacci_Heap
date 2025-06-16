@@ -128,8 +128,8 @@ public class FibonacciHeap
 		//insert to bucket list
 		HeapNode cur = this.firstRoot;
 
-		System.out.println(this.treeCount + " tree count");
-		System.out.println(cur.rank + " rank");
+		//System.out.println(this.treeCount + " tree count");
+		//System.out.println(cur.rank + " rank");
 
 		for(int i=0; i<this.treeCount; i++)
 		{
