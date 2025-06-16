@@ -12,7 +12,7 @@ public class experiment1 {
         ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>(); 
 
         
-
+        int NUM = 7;
         for (int i = 0; i < 464646; i++) {
             itemsToInsert.add(i);
         }
@@ -22,7 +22,7 @@ public class experiment1 {
 
         FibonacciHeap fb = new FibonacciHeap(2);
         for (int i = 0; i < 464646; i++) {
-            nodes.add(fb.insert(i, null));
+            nodes.add(fb.insert(itemsToInsert.get(i), null));
         }
 
         long endTime1 = System.nanoTime();
@@ -37,6 +37,7 @@ public class experiment1 {
         //now delete max until 46 left
         int i=0;
         while (fb.size() > 46) {
+            System.out.println(i);
             fb.delete(nodes.get(i));
             i++;
         }

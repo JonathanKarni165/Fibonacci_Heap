@@ -1,3 +1,4 @@
+import java.security.KeyStore.Entry;
 import java.util.*;
 /**
  * FibonacciHeap
@@ -119,11 +120,10 @@ public class FibonacciHeap
 	private int consolidate()
 	{
 		int numOfLinks = 0;
-		double maxSize = logBase(PHI, this.size)+1;
+		double maxSize = this.size;
 		maxSize = Math.ceil(maxSize);
-		ArrayList<HeapNode> bucketList = new ArrayList<HeapNode>((int)maxSize);
-		for(int i=0; i<maxSize ; i++)
-			bucketList.add(null);
+		Map<Integer,HeapNode> map = new HashMap<>();
+		
 
 		//insert to bucket list
 		HeapNode cur = this.firstRoot;
@@ -133,54 +133,48 @@ public class FibonacciHeap
 
 		for(int i=0; i<this.treeCount; i++)
 		{
-			if(bucketList.get(cur.rank) == null)
+			if(map.get(cur.rank) == null)
 			{
-				bucketList.set(cur.rank, cur);
+				map.put(cur.rank, cur);
 				cur = cur.next;
 			}
 			else
 			{
 				int curRank = cur.rank;
 				HeapNode linkCur = cur;
-				while (bucketList.get(curRank) != null) 
+				while (map.get(curRank) != null) 
 				{
-					linkCur = link(bucketList.get(curRank), linkCur);
-					numOfLinks++;
+					linkCur = link(map.get(curRank), linkCur);
+					map.remove(curRank);
 					this.linkCount++;
-					bucketList.set(curRank, null);
+					numOfLinks++;
 					curRank++;
 				}
-				bucketList.set(curRank, linkCur);
+				map.put(curRank, linkCur);
 				cur = linkCur.next;
 			}
 		}
 
+		Iterator<Map.Entry<Integer,HeapNode>> entries = map.entrySet().iterator();
+		System.out.println("map size: " + map.size());
+		this.firstRoot = entries.next().getValue();
+		cur = this.firstRoot;
+		int newTreeCount = 1;
 		//pop out of bucket list and build heap
-		int i=0;
-		int newTreeCount = 0;
-		while (bucketList.get(i) == null)
-			i++;
-		cur = bucketList.get(i);
-		newTreeCount++;
-
-		this.firstRoot = cur;
-		HeapNode temp;
-		i++;
-
-		while(i < (int)maxSize)
-		{
-			if (bucketList.get(i) != null)
+		while (entries.hasNext()) {
+			HeapNode temp = entries.next().getValue();
+			if (temp != null)
 			{
-				temp = bucketList.get(i);
+				System.out.println("rank " + temp.rank);
 				cur.next = temp;
 				temp.prev = cur;
 				cur = temp;
 				newTreeCount++;
 			}
-			i++;
+			
 		}
-		cur.next = firstRoot;
-		firstRoot.prev = cur;
+		cur.next = this.firstRoot;
+		this.firstRoot.prev = cur;
 		this.treeCount = newTreeCount;
 		return numOfLinks;
 	}
@@ -245,7 +239,8 @@ public class FibonacciHeap
 
 
 		HeapNode curr = this.min.child;
-		for(int i=0;i<this.min.rank;i++){
+		for(int i=0;i<this.min.rank && curr != null;i++){
+			System.out.println(curr);
 			curr.parent = null;
 
 			curr = curr.next;
