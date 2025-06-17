@@ -122,8 +122,6 @@ public class FibonacciHeap
 		int numOfLinks = 0;
 		int size = (int) (Math.log(this.size()) / Math.log(PHI)) + 2;;
 		ArrayList<HeapNode> bucketList = new ArrayList<HeapNode>(size);
-		for(int i=0; i<size ; i++)
-			bucketList.add(null);
 
 		//insert to bucket list
 		HeapNode cur = this.firstRoot;
@@ -290,6 +288,7 @@ public class FibonacciHeap
 	public int decreaseKey(HeapNode x, int diff) 
 	{    
 		HeapNode curr = x.parent;
+		HeapNode temp = null;
 		int numOfCuts = 1;
 		x.key -= diff;
 		this.min = (this.min.key > x.key) ? x : this.min;
@@ -304,13 +303,14 @@ public class FibonacciHeap
 		while(curr != null && curr.looserNum == c){
 			curr.looserNum = 0;
 			if(curr.parent != null){
+				temp = curr.parent;
 				curr.parent.looserNum++;
 				numOfCuts++;
 				this.cutPointerUpdate(curr);
 				this.cutCount++;
 				this.treeCount++;
 			}
-			curr = curr.parent;
+			curr = temp;
 		}
 		return numOfCuts; // should be replaced by student code
 	}
@@ -504,7 +504,7 @@ public class FibonacciHeap
 		if (node == null) return;
 
 		for (int i = 0; i < depth; i++) System.out.print("  "); // Indentation
-		System.out.println("Key: " + node.key + ", rank: " + node.rank);
+		System.out.println("Key: " + node.key + ", looser: " + node.looserNum);
 
 		// Recursively print children
 		if (node.child != null) {

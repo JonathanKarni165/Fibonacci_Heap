@@ -3,27 +3,56 @@ import java.util.Comparator;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 
 public class experiment1 {
     public static void main(String[] args) {
+        int[] cArr = {2,3,4,10,20,100,1000,5000};
+
+        String filePath = "data.csv";
+        try (FileWriter fw = new FileWriter(filePath, true))
+        {
+            for (int i = 0; i < cArr.length; i++) {
+                double[] CData = {0.0, 0.0, 0.0, 0.0, 0.0};
+
+                for (int j = 0; j < 20; j++) {
+                    double[] curData = run(cArr[i]);
+
+                    for (int k = 0; k < CData.length; k++) {
+                        CData[k] += curData[k];
+                    }
+                    
+                }
+                for (int k = 0; k < CData.length; k++) 
+                    CData[k] /= 20;
+                fw.append(cArr[i] + "," + CData[0] +"," + CData[1] +"," + CData[2] +"," + CData[3] +"," + CData[4] + "\n");
+            }
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        
+        
+    }
+    public static double[] run(int c) {
 
 
         ArrayList<Integer> itemsToInsert = new ArrayList<Integer>();
         ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>(); 
 
-        
-        int NUM = 464646;
-        for (int i = 0; i < NUM; i++) {
+        for (int i = 1; i <= 464646; i++) {
             itemsToInsert.add(i);
         }
         Collections.shuffle(itemsToInsert);
 
         long startTime1 = System.nanoTime();
 
-        FibonacciHeap fb = new FibonacciHeap(2);
-        for (int i = 0; i < NUM; i++) {
+        FibonacciHeap fb = new FibonacciHeap(c);
+        for (int i = 0; i < 464646; i++) {
             nodes.add(fb.insert(itemsToInsert.get(i), null));
-            //fb.printHeap();
         }
 
         long endTime1 = System.nanoTime();
@@ -32,19 +61,13 @@ public class experiment1 {
         Collections.sort(nodes, new CompNode());
 
         long startTime2 = System.nanoTime();
-        System.out.println("\n\n\n");
+
         fb.deleteMin();
 
         //now delete max until 46 left
         int i=0;
-        while (fb.size() > 5) {
+        while (fb.size() > 46) {
             fb.delete(nodes.get(i));
-            if(fb.size() < 10)
-            {
-                System.out.println("\n\n\n");
-                fb.printHeap();
-            }
-            
             i++;
         }
 
@@ -58,12 +81,9 @@ public class experiment1 {
 
 
         String filePath = "data.csv";
-        String data = time + "," + fb.size() + "," + fb.totalLinks() + "," + fb.totalCuts() + "," + fb.numTrees();
-        try (FileWriter fw = new FileWriter(filePath, true)) {
-            fw.append(data + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String data = time + "," + fb.size() + "," + fb.totalLinks() + "," + fb.totalCuts() + "," + fb.numTrees()+ "," + c;
+        double[] dataArr = {time,fb.size(),fb.totalLinks(),fb.totalCuts(),fb.numTrees()};
+        return dataArr;
 
 
         /*
