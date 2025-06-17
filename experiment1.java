@@ -8,18 +8,40 @@ import java.util.Scanner;
 
 public class experiment1 {
     public static void main(String[] args) {
+        int[] cArr = {2,3,4,10,20,100,1000,5000};
+
+        String filePath = "data.csv";
+        try (FileWriter fw = new FileWriter(filePath, true))
+        {
+            for (int i = 0; i < cArr.length; i++) {
+                double[] CData = {0.0, 0.0, 0.0, 0.0, 0.0};
+
+                for (int j = 0; j < 20; j++) {
+                    double[] curData = run(cArr[i]);
+
+                    for (int k = 0; k < CData.length; k++) {
+                        CData[k] += curData[k];
+                    }
+                    
+                }
+                for (int k = 0; k < CData.length; k++) 
+                    CData[k] /= 20;
+                fw.append(cArr[i] + "," + CData[0] +"," + CData[1] +"," + CData[2] +"," + CData[3] +"," + CData[4] + "\n");
+            }
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        
+        
+    }
+    public static double[] run(int c) {
 
 
         ArrayList<Integer> itemsToInsert = new ArrayList<Integer>();
         ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>(); 
-
-        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-        System.out.println("Enter c value");
-
-        String val = myObj.nextLine();  // Read user input
-
-        int cVal = Integer.parseInt(val);
-        
 
         for (int i = 1; i <= 464646; i++) {
             itemsToInsert.add(i);
@@ -28,7 +50,7 @@ public class experiment1 {
 
         long startTime1 = System.nanoTime();
 
-        FibonacciHeap fb = new FibonacciHeap(cVal);
+        FibonacciHeap fb = new FibonacciHeap(c);
         for (int i = 0; i < 464646; i++) {
             nodes.add(fb.insert(itemsToInsert.get(i), null));
         }
@@ -59,12 +81,9 @@ public class experiment1 {
 
 
         String filePath = "data.csv";
-        String data = time + "," + fb.size() + "," + fb.totalLinks() + "," + fb.totalCuts() + "," + fb.numTrees()+ "," + cVal;
-        try (FileWriter fw = new FileWriter(filePath, true)) {
-            fw.append(data + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String data = time + "," + fb.size() + "," + fb.totalLinks() + "," + fb.totalCuts() + "," + fb.numTrees()+ "," + c;
+        double[] dataArr = {time,fb.size(),fb.totalLinks(),fb.totalCuts(),fb.numTrees()};
+        return dataArr;
 
 
         /*

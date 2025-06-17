@@ -44,7 +44,7 @@ public class experiment2 {
 
         //now delete max until 46 left
         int i=0;
-        while (nodes.get(i).key > 48) {
+        while (nodes.get(i).key > 47) {
             fb.decreaseKey(nodes.get(i), nodes.get(i).key);
             // if(fb.size() < 5){
             //     System.out.println("************************************************************************");
@@ -60,6 +60,7 @@ public class experiment2 {
         }
 
         fb.deleteMin();
+        fb.printHeap();
 
         long endTime2 = System.nanoTime();
         double time = ((endTime1-startTime1)+ (endTime2-startTime2))/1000000;
