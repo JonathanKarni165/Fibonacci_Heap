@@ -94,7 +94,7 @@ public class FibonacciHeap
 	{
 		int numOfLinks = 0;
 
-		HeapNode[] conArr = new HeapNode[1];
+		HeapNode[] conArr = new HeapNode[5];
 		HeapNode temp = null;
 
 		int prevTreeCount = this.treeCount;
@@ -183,78 +183,6 @@ public class FibonacciHeap
 	}
 
 
-
-
-
-
-	private int consolidate1()
-	{
-		int numOfLinks = 0;
-		double maxSize = logBase(PHI, this.size)+1;
-		maxSize = Math.ceil(maxSize);
-		ArrayList<HeapNode> bucketList = new ArrayList<HeapNode>((int)maxSize);
-		for(int i=0; i<maxSize ; i++)
-			bucketList.add(null);
-
-		//insert to bucket list
-		HeapNode cur = this.firstRoot;
-
-		//System.out.println(this.treeCount + " tree count");
-		//System.out.println(cur.rank + " rank");
-
-		for(int i=0; i<this.treeCount; i++)
-		{
-			if(bucketList.get(cur.rank) == null)
-			{
-				bucketList.set(cur.rank, cur);
-				cur = cur.next;
-			}
-			else
-			{
-				int curRank = cur.rank;
-				HeapNode linkCur = cur;
-				while (bucketList.get(curRank) != null) 
-				{
-					linkCur = link(bucketList.get(curRank), linkCur);
-					numOfLinks++;
-					this.linkCount++;
-					bucketList.set(curRank, null);
-					//curRank++;
-				}
-				bucketList.set(curRank, linkCur);
-				cur = linkCur.next;
-			}
-		}
-		//hi
-		//pop out of bucket list and build heap
-		int i=0;
-		int newTreeCount = 0;
-		while (bucketList.get(i) == null)
-			i++;
-		cur = bucketList.get(i);
-		newTreeCount++;
-
-		this.firstRoot = cur;
-		HeapNode temp;
-		i++;
-
-		while(i < (int)maxSize)
-		{
-			if (bucketList.get(i) != null)
-			{
-				temp = bucketList.get(i);
-				cur.next = temp;
-				temp.prev = cur;
-				cur = temp;
-				newTreeCount++;
-			}
-			i++;
-		}
-		cur.next = firstRoot;
-		firstRoot.prev = cur;
-		this.treeCount = newTreeCount;
-		return numOfLinks;
-	}
 
 	/**
 	 * 
