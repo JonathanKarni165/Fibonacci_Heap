@@ -350,10 +350,12 @@ public class FibonacciHeap
 	public int decreaseKey(HeapNode x, int diff) 
 	{    
 		HeapNode curr = x.parent;
+		HeapNode temp = null;
 		int numOfCuts = 1;
 		x.key -= diff;
 		this.min = (this.min.key > x.key) ? x : this.min;
 		if(curr == null){
+
 			return 0;
 		}
 		this.treeCount++;
@@ -364,13 +366,14 @@ public class FibonacciHeap
 		while(curr != null && curr.looserNum == c){
 			curr.looserNum = 0;
 			if(curr.parent != null){
+				temp = curr.parent;
 				curr.parent.looserNum++;
 				numOfCuts++;
 				this.cutPointerUpdate(curr);
 				this.cutCount++;
 				this.treeCount++;
 			}
-			curr = curr.parent;
+			curr = temp;
 		}
 		return numOfCuts; // should be replaced by student code
 	}
