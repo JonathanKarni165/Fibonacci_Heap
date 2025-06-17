@@ -3,6 +3,7 @@ import java.util.Comparator;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class experiment2 {
     public static void main(String[] args) {
@@ -11,6 +12,13 @@ public class experiment2 {
         ArrayList<Integer> itemsToInsert = new ArrayList<Integer>();
         ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>(); 
 
+
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("Enter c value");
+
+        String val = myObj.nextLine();  // Read user input
+
+        int cVal = Integer.parseInt(val);
         
 
         for (int i = 1; i <= 464646; i++) {
@@ -36,7 +44,7 @@ public class experiment2 {
 
         //now delete max until 46 left
         int i=0;
-        while (i < fb.size()) {
+        while (nodes.get(i).key > 48) {
             fb.decreaseKey(nodes.get(i), nodes.get(i).key);
             // if(fb.size() < 5){
             //     System.out.println("************************************************************************");
@@ -51,6 +59,8 @@ public class experiment2 {
             i++;
         }
 
+        fb.deleteMin();
+
         long endTime2 = System.nanoTime();
         double time = ((endTime1-startTime1)+ (endTime2-startTime2))/1000000;
         System.out.println("time: " + (double)(time/1000000));
@@ -61,7 +71,7 @@ public class experiment2 {
 
 
         String filePath = "data1.csv";
-        String data = time + "," + fb.size() + "," + fb.totalLinks() + "," + fb.totalCuts() + "," + fb.numTrees();
+        String data = time + "," + fb.size() + "," + fb.totalLinks() + "," + fb.totalCuts() + "," + fb.numTrees()+ "," + cVal;
         try (FileWriter fw = new FileWriter(filePath, true)) {
             fw.append(data + "\n");
         } catch (IOException e) {
