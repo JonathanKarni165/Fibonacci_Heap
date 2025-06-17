@@ -10,7 +10,7 @@ public class experiment1 {
     public static void main(String[] args) {
         int[] cArr = {2,3,4,10,20,100,1000,5000};
 
-        String filePath = "data.csv";
+        String filePath = "data3.csv";
         try (FileWriter fw = new FileWriter(filePath, true))
         {
             for (int i = 0; i < cArr.length; i++) {
@@ -58,7 +58,7 @@ public class experiment1 {
         long endTime1 = System.nanoTime();
 
         //sort nodes from max to min
-        Collections.sort(nodes, new CompNode());
+        //Collections.sort(nodes, new CompNode());
 
         long startTime2 = System.nanoTime();
 
